@@ -1,9 +1,11 @@
 {
   "name": "@mtillmann/jpeg-xmp-writer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "small library to write XMP data into JPEGs",
   "main": "jpeg-xmp-writer.js",
   "type": "module",
+  "homepage": "https://github.com/Mtillmann/jpeg-xmp-writer",
+  "issues": "https://github.com/Mtillmann/jpeg-xmp-writer/issues",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint"
