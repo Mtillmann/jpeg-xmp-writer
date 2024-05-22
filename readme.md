@@ -1,6 +1,6 @@
-# JPEG-XMP-WRITER
+# jpeg-xmp-writer
 
-A very simple library to write XMP metadata to JPEG files in the browser.
+A very simple library to write XMP metadata to JPEG files in the browser. Based on [Simon Boddy's xmp-jpeg](https://github.com/bbsimonbb/xmp-jpeg/). 
 
 ## Installation
 
