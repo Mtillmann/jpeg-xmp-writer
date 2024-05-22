@@ -1,4 +1,4 @@
-import { uuidv4 } from './util.js'
+import { uuidv4, isOject } from './util.js'
 
 const template = `<root><x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.5-c002 1.148022, 2012/07/15-18:06:45        ">
     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -9,23 +9,16 @@ const template = `<root><x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP C
     </rdf:RDF>
 </x:xmpmeta></root>`
 
-export default function (buffer, DOMProcessor, dates) {
+export default function (buffer, DOMProcessorOrPropMap) {
   let xmp = (new DOMParser()).parseFromString(template, 'text/xml').documentElement
   const descriptionNode = xmp.getElementsByTagName('rdf:Description')[0]
 
-  if (dates && typeof dates === 'boolean') {
-    const now = new Date().toISOString()
-    descriptionNode.setAttribute('xmp:ModifyDate', now)
-    descriptionNode.setAttribute('xmp:CreateDate', now)
-    descriptionNode.setAttribute('xmp:MetadataDate', now)
-  }
-
-  if (Array.isArray(DOMProcessor)) {
-    DOMProcessor.forEach(([attribute, value]) => {
+  if (isOject(DOMProcessorOrPropMap)) {
+    Object.entries(DOMProcessorOrPropMap).forEach(([attribute, value]) => {
       descriptionNode.setAttribute(attribute, value)
     })
-  } else if (typeof DOMProcessor === 'function') {
-    xmp = DOMProcessor(xmp)
+  } else if (typeof DOMProcessorOrPropMap === 'function') {
+    xmp = DOMProcessorOrPropMap(xmp)
   }
 
   descriptionNode.insertAdjacentHTML('beforeend', '<dc:creator><rdf:Seq><rdf:li>creator</rdf:li></rdf:Seq></dc:creator>')

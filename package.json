@@ -1,5 +1,5 @@
 {
-  "name": "jpeg-xmp-writer",
+  "name": "@mtillmann/jpeg-xmp-writer",
   "version": "0.0.1",
   "description": "small library to write XMP data into JPEGs",
   "main": "jpeg-xmp-writer.js",

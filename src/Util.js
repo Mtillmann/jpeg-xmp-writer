@@ -38,3 +38,7 @@ export function arrayBufferToDataURL (buffer, mimeType = 'image/jpeg') {
   const base64 = arrayBufferToBase64(buffer)
   return `data:${mimeType};base64,${base64}`
 }
+
+export function isOject (variable) {
+  return typeof variable === 'object' && variable !== null && !Array.isArray(variable)
+}
