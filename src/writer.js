@@ -21,8 +21,6 @@ export default function (buffer, DOMProcessorOrPropMap) {
     xmp = DOMProcessorOrPropMap(xmp)
   }
 
-  descriptionNode.insertAdjacentHTML('beforeend', '<dc:creator><rdf:Seq><rdf:li>creator</rdf:li></rdf:Seq></dc:creator>')
-
   // insert it
   const dvIn = new DataView(buffer)
   const pos = 4 + dvIn.getUint16(4) // get length of APP0 segment
