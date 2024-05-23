@@ -69,38 +69,38 @@ const xmpArrayBuffer2 = writeXMP(arrayBuffer, dom => {
 
 ## Working with Blobs
 
-If your source image data is a Blob, use these one-liners to convert it to array buffer and back:
+If your source image data is a Blob, use these one-liners to convert it to ArrayBuffer and back:
 
 ```javascript
 import { writeXMP } from '@mtillmann/jpeg-xmp-writer'
 
 const originalBlob = new Blob(/*...*/)
 
-// Blob -> arrayBuffer
+// Blob -> ArrayBuffer
 const arrayBuffer = await new Response(originalBlob).arrayBuffer()
 
 // inject XMP metadata
 const bufferWithXMP = writeXMP(arrayBuffer, {'xmp:Title': 'I was a Blob once!'})
 
-// arrayBuffer -> Blob
+// ArrayBuffer -> Blob
 const blobWithXMP = new Blob([bufferWithXMP], { type: "image/jpeg" })
 ```
 
 ## Working with data URLs
 
-If your source image data is a data URL, I've included two helper functions to convert it to array buffer and back:
+If your source image data is a data URL, I've included two helper functions to convert to ArrayBuffer and back to data URL:
 
 ```javascript
 import { writeXMP, arrayBufferToDataURL, dataURLToArrayBuffer } from '@mtillmann/jpeg-xmp-writer'
 
 const originalDataURL = 'data:image/jpeg;base64,...'
 
-// data URL -> arrayBuffer
+// data URL -> ArrayBuffer
 const arrayBuffer = dataURLToArrayBuffer(originalDataURL)
 
 // inject XMP metadata
 const bufferWithXMP = writeXMP(arrayBuffer, {'xmp:Title': 'I was a Data URL once!'})
 
-// arrayBuffer -> Data URL
+// ArrayBuffer -> Data URL
 const dataURLWithXMP = arrayBufferToDataURL(bufferWithXMP)
 ```
