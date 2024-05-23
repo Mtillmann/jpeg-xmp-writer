@@ -48,7 +48,17 @@ const xmpArrayBuffer = writeXMP(arrayBuffer, dom => {
   dom.getElementsByTagName('rdf:Description')[0].insertAdjacentHTML('beforeend', '<dc:creator><rdf:Seq><rdf:li>Martin</rdf:li></rdf:Seq></dc:creator>')
   return dom
 })
+```
 
+In the example above I set the `xmp:Title` attribute of the first (and only) `<rdf:Description>` element to "Hello, World!" and added a `<dc:creator>` element with the value "Martin".
+
+Note that you can't use `querySelector` or `querySelectorAll` to find namespaced elements, use `getElementsByTagName()[0]` instead.
+
+If you only want set attributes, use the attribute map option described above.
+
+Next, I'll show you how to replace the entire XMP metadata DOM:
+
+```javascript
 // replace the XMP metadata DOM
 const xmpArrayBuffer2 = writeXMP(arrayBuffer, dom => {
     // add a fake root node to the XMP metadata, because innerHTML is used to extract actual XML
@@ -64,8 +74,9 @@ const xmpArrayBuffer2 = writeXMP(arrayBuffer, dom => {
     </rdf:RDF>
 </x:xmpmeta></root>`, 'text/xml').documentElement // <- return the documentElement (<root>)
 })
-
 ```
+
+It's pretty straightforward and the only thing to keep in mind is that your XML/DOM needs some element that wraps `<x:xmpmeta>`, in the example above it's simply called `<root>`. You also need to return that wrapping root node by returning `yourDOMObject.documentElement`.
 
 ## Working with Blobs
 
