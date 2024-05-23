@@ -45,7 +45,7 @@ const arrayBuffer = /*...*/ // your JPEG file as an ArrayBuffer
 const xmpArrayBuffer = writeXMP(arrayBuffer, dom => {
   // use getElementsByTagName to find namespaced elements
   dom.getElementsByTagName('rdf:Description')[0].setAttribute('xmp:Title', 'Hello, World!')
-  dom.getElementsByTagName('rdf:Description').insertAdjacentHTML('beforeend', '<dc:creator><rdf:Seq><rdf:li>Martin</rdf:li></rdf:Seq></dc:creator>')
+  dom.getElementsByTagName('rdf:Description')[0].insertAdjacentHTML('beforeend', '<dc:creator><rdf:Seq><rdf:li>Martin</rdf:li></rdf:Seq></dc:creator>')
   return dom
 })
 
@@ -62,12 +62,10 @@ const xmpArrayBuffer2 = writeXMP(arrayBuffer, dom => {
             xmp:Title="I'm an Image yay">
         </rdf:Description>
     </rdf:RDF>
-</x:xmpmeta></root>`, 'text/xml').documentElement // <- return the documentElement
+</x:xmpmeta></root>`, 'text/xml').documentElement // <- return the documentElement (<root>)
 })
 
 ```
-
-
 
 ## Working with Blobs
 
