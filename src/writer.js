@@ -9,7 +9,15 @@ const template = `<root><x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP C
     </rdf:RDF>
 </x:xmpmeta></root>`
 
-export default function (buffer, DOMProcessorOrPropMap) {
+export default function (buffer, DOMProcessorOrPropMap, parser = null) {
+  if (!parser && typeof DOMParser !== 'undefined') {
+    parser = new DOMParser()
+  }
+
+  if (!parser) {
+    throw new Error('No parser provided and no DOMParser available.')
+  }
+
   let xmp = (new DOMParser()).parseFromString(template, 'text/xml').documentElement
   const descriptionNode = xmp.getElementsByTagName('rdf:Description')[0]
 
