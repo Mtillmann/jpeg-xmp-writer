@@ -9,12 +9,22 @@ const template = `<root><x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP C
     </rdf:RDF>
 </x:xmpmeta></root>`
 
-export default function (buffer, DOMProcessorOrPropMap, parser = null, crypto = null) {
-  if (!parser && typeof DOMParser !== 'undefined') {
-    parser = new DOMParser()
+export default function (buffer, DOMProcessorOrPropMap, Parser = null, serializer = null, crypto = null) {
+  let useInnerHTML = false
+
+  if (!Parser && typeof DOMParser !== 'undefined') {
+    Parser = DOMParser
   }
 
-  if (!parser) {
+  if (!serializer && typeof DOMParser !== 'undefined') {
+    useInnerHTML = true
+  }
+
+  if (!serializer && !useInnerHTML) {
+    throw new Error('No serializer argument provided and no DOMParser available.')
+  }
+
+  if (!Parser) {
     throw new Error('No parser argument provided and no DOMParser available.')
   }
 
@@ -26,7 +36,7 @@ export default function (buffer, DOMProcessorOrPropMap, parser = null, crypto = 
     throw new Error('No crypto argument provided and no window.crypto available.')
   }
 
-  let xmp = (new parser()).parseFromString(template, 'text/xml').documentElement
+  let xmp = (new Parser()).parseFromString(template, 'text/xml').documentElement
   const descriptionNode = xmp.getElementsByTagName('rdf:Description')[0]
 
   if (isOject(DOMProcessorOrPropMap)) {
@@ -37,6 +47,8 @@ export default function (buffer, DOMProcessorOrPropMap, parser = null, crypto = 
     xmp = DOMProcessorOrPropMap(xmp)
   }
 
+  const xmpString = useInnerHTML ? xmp.innerHTML : serializer(xmp.firstChild)
+  console.log(xmpString)
   // insert it
   const dvIn = new DataView(buffer)
   const pos = 4 + dvIn.getUint16(4) // get length of APP0 segment
@@ -44,7 +56,7 @@ export default function (buffer, DOMProcessorOrPropMap, parser = null, crypto = 
     'XXXX' + // APP1 marker and length will go here
         'http://ns.adobe.com/xap/1.0/\0' +
         '<?xpacket begin="XX" id="' + uuidv4(crypto) + '"?>' +
-        xmp.innerHTML +
+        xmpString +
         (' '.repeat(100) + '\n').repeat(10) + // 1k padding
         '<?xpacket end="w"?>'
   )
