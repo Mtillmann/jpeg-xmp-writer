@@ -48,7 +48,7 @@ export default function (buffer, DOMProcessorOrPropMap, Parser = null, serialize
   }
 
   const xmpString = useInnerHTML ? xmp.innerHTML : serializer(xmp.firstChild)
-  console.log(xmpString)
+  
   // insert it
   const dvIn = new DataView(buffer)
   const pos = 4 + dvIn.getUint16(4) // get length of APP0 segment

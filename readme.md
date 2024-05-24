@@ -1,6 +1,6 @@
 # jpeg-xmp-writer
 
-A very simple library to write XMP metadata to JPEG files in the browser. Based on [Simon Boddy's xmp-jpeg](https://github.com/bbsimonbb/xmp-jpeg/). 
+A very simple library to write XMP metadata to JPEG files in the browser **and node**. Based on [Simon Boddy's xmp-jpeg](https://github.com/bbsimonbb/xmp-jpeg/). 
 
 ## Installation
 
@@ -8,7 +8,7 @@ A very simple library to write XMP metadata to JPEG files in the browser. Based 
 npm i install @mtillmann/jpeg-xmp-writer
 ```
 
-## Usage
+## Basic Usage (Browser)
 
 ```javascript
 import { writeXMP } from '@mtillmann/jpeg-xmp-writer'
@@ -115,3 +115,42 @@ const bufferWithXMP = writeXMP(arrayBuffer, {'xmp:Title': 'I was a Data URL once
 // ArrayBuffer -> Data URL
 const dataURLWithXMP = arrayBufferToDataURL(bufferWithXMP)
 ```
+
+## Basic Usage (Node)
+
+Since node lacks Domparser and has no global crypto object, you need install and additional dependency and pass a few extra options to the `writeXMP` function:
+
+Install `@xmldom/xmldom`: 
+
+```bash
+npm i install @xmldom/xmldom
+```
+
+Then, in your script, run writeXMP like this:
+  
+```javascript
+// for demo purposes
+import { readFileSync, writeFileSync } from 'fs'
+
+// import writeXMP and the necessary dependencies
+import { writeXMP } from '@mtillmann/jpeg-xmp-writer'
+import { DOMParser, XMLSerializer } from '@xmldom/xmldom'
+import crypto from 'crypto'
+
+// read the JPEG file and convert it to an ArrayBuffer
+const originalBuffer = readFileSync('./test/test.jpg')
+const arrayBuffer = new Uint8Array(originalBuffer).buffer
+
+// Write XMP metadata to the JPEG, note the extra arguments
+const xmpedArrayBuffer = writeXMP(arrayBuffer, { 'xmp:Title': 'Written by Node :)' }, DOMParser, new XMLSerializer().serializeToString, crypto)
+
+// write the modified ArrayBuffer to a new file
+const outBuffer = Buffer.from(xmpedArrayBuffer)
+writeFileSync('./test/test-out.jpg', outBuffer)
+```
+
+The three extra arguments are:
+
+- `Parser` - a constructable DOMParser object, thats somewhat compatible with the browser's DOMParser.  
+- `serializer` - a function that serializes a DOM object to a string, I used `XMLSerializer::serializeToString` method from the `@xmldom/xmldom` package.  
+- `crypto` - a crypto object that has a `getRandomValues` method, I used the node's built-in `crypto` module.
