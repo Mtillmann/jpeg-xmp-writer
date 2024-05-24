@@ -9,16 +9,24 @@ const template = `<root><x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP C
     </rdf:RDF>
 </x:xmpmeta></root>`
 
-export default function (buffer, DOMProcessorOrPropMap, parser = null) {
+export default function (buffer, DOMProcessorOrPropMap, parser = null, crypto = null) {
   if (!parser && typeof DOMParser !== 'undefined') {
     parser = new DOMParser()
   }
 
   if (!parser) {
-    throw new Error('No parser provided and no DOMParser available.')
+    throw new Error('No parser argument provided and no DOMParser available.')
   }
 
-  let xmp = (new DOMParser()).parseFromString(template, 'text/xml').documentElement
+  if (!crypto && typeof window !== 'undefined') {
+    crypto = window.crypto
+  }
+
+  if (!crypto) {
+    throw new Error('No crypto argument provided and no window.crypto available.')
+  }
+
+  let xmp = (new parser()).parseFromString(template, 'text/xml').documentElement
   const descriptionNode = xmp.getElementsByTagName('rdf:Description')[0]
 
   if (isOject(DOMProcessorOrPropMap)) {
@@ -35,7 +43,7 @@ export default function (buffer, DOMProcessorOrPropMap, parser = null) {
   const encodedPayload = new TextEncoder().encode(
     'XXXX' + // APP1 marker and length will go here
         'http://ns.adobe.com/xap/1.0/\0' +
-        '<?xpacket begin="XX" id="' + uuidv4() + '"?>' +
+        '<?xpacket begin="XX" id="' + uuidv4(crypto) + '"?>' +
         xmp.innerHTML +
         (' '.repeat(100) + '\n').repeat(10) + // 1k padding
         '<?xpacket end="w"?>'
