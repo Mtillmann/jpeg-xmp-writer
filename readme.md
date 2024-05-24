@@ -118,7 +118,7 @@ const dataURLWithXMP = arrayBufferToDataURL(bufferWithXMP)
 
 ## Basic Usage (Node)
 
-Since node lacks Domparser and has no global crypto object, you need install and additional dependency and pass a few extra options to the `writeXMP` function:
+Since node lacks a native DomParser and has no global crypto object, you need install and additional dependency and pass a few extra arguments to the `writeXMP` function:
 
 Install `@xmldom/xmldom`: 
 
